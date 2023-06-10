@@ -5,6 +5,7 @@ import Box from '@mui/material/Box';
 import { AccessTime } from "@mui/icons-material"
 import Rating from "@mui/material/Rating"
 import { createTheme, ThemeProvider } from "@mui/material"
+import { useNavigate } from 'react-router-dom'
 
 const theme = createTheme({
     components: {
@@ -31,13 +32,15 @@ const theme = createTheme({
     },
 })
 
-export default function TourCard({
-    tour
-    }) {
+export default function TourCard({tour}) {
+    const navigate = useNavigate()
+    const handleClick = () => {
+        navigate(`/${tour.id}`)
+    }
     return (
         <Grid item md={3} sm={4} xs={12}>
             <ThemeProvider theme={theme}>
-                <Paper elevation={3}>
+                <Paper sx={{cursor: 'pointer'}} elevation={3} onClick={handleClick}>
                     <img className="img" src={tour.image} alt="" />
                     <Box paddingX={1}>
                         <Typography variant="subtitle1" component="h2">

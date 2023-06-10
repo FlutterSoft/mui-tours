@@ -8,6 +8,11 @@ import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
+import { Button } from '@mui/material';
+import { useNavigate } from 'react-router-dom'
+import { useState } from 'react';
+import Sidebar from './Sidebar'
+
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -51,28 +56,45 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-export default function SearchAppBar() {
+export default function SearchAppBar({ handleSearch }) {
+  const navigate = useNavigate()
+  const [searchValue, setSearchValue] = useState('')
+  const [open, setOpen] = useState(false)
+  
+  const handleChange = (e) => {
+    setSearchValue(e.target.value)
+    handleSearch(e.target.value)
+    navigate('/')
+
+  }
+
+  const toggleDrawer = () => {
+    setOpen(!open);
+  };
+  
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
+          <Sidebar open={open} toggleDrawer={toggleDrawer} />
           <IconButton
             size="large"
             edge="start"
             color="inherit"
             aria-label="open drawer"
             sx={{ mr: 2 }}
+            onClick={toggleDrawer}
           >
             <MenuIcon />
           </IconButton>
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
-          >
-            The Best Tour Guide
-          </Typography>
+            <Typography
+              variant="h6"
+              noWrap
+              component="div"
+              sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
+            >
+              <Button sx={{color: 'white'}} onClick={() => navigate('/')}> The Best Tour Guide</Button>
+            </Typography>
           <Search>
             <SearchIconWrapper>
               <SearchIcon />
@@ -80,6 +102,8 @@ export default function SearchAppBar() {
             <StyledInputBase
               placeholder="Search…"
               inputProps={{ 'aria-label': 'search' }}
+              value={searchValue}
+              onChange={handleChange}
             />
           </Search>
         </Toolbar>

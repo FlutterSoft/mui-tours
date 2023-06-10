@@ -1,39 +1,35 @@
-import TourCard from "./components/TourCard";
-import Container from '@mui/material/Container';
-import Grid from '@mui/material/Grid';
 import './App.css'
-import SearchAppBar from "./components/AppBar";
-import data from "./data.json"
-import { Typography } from "@mui/material";
+import SearchAppBar from './components/AppBar';
+import Home from "./pages/Home"
+import { BrowserRouter, Routes, Route } from "react-router-dom"
+import Tour from "./pages/Tour"
+import { useState } from 'react'
+import Data from "./data.json"
 
 function App() {
-  const renderedTours = data.map( tour => {
-    return <TourCard tourName={tour.tours.name} />
-  })
-  return (
-    <div className="App">
-      <SearchAppBar />
-      <Container sx={{marginY: 5}}>
-        {data.map((city) => (
-          <>
-            <Typography
-              variant="h4"
-              component="h4"
-              marginTop={5}
-              marginBottom={3}
-            >
-              Top {city.name} Tours
-              </Typography>
-              <Grid container spacing={5}>
-                {city.tours.map(tour => (
-                  <TourCard tour={tour} key={tour.id}/>
-                ))}
-              </Grid>
-            </>
-        ))}
+  const [list, setList] = useState(Data)
 
-      </Container>
-    </div>
+  const handleSearch = (searchValue) => {
+    const filteredList = Data.flatMap((city) => {
+      const filteredTours = city.tours.filter((tour) => tour.name.toLowerCase().includes(searchValue.toLowerCase()));
+      if (filteredTours.length > 0) {
+        return { ...city, tours: filteredTours };
+      }
+      return [];
+    });
+    setList(filteredList);
+  };
+  
+  
+  
+  return (
+    <BrowserRouter>
+      <SearchAppBar handleSearch={handleSearch} />
+      <Routes>
+        <Route path="/" element={<Home list={list}/>}/>
+        <Route path="/:id" element={<Tour />}/>
+      </Routes>
+    </BrowserRouter>
   );
 }
 
